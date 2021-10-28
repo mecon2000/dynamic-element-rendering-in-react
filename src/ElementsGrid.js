@@ -1,28 +1,38 @@
 import { TextInput } from "./TextInput";
 import { SelectInput } from "./SelectInput";
 import { useState, useEffect } from "react";
-import GridLayout from "react-grid-layout";
+import GridLayout, { WidthProvider } from "react-grid-layout";
+
+const GridLayoutWithWidth = WidthProvider(GridLayout);
 
 export function ElementsGrid(props) {
   const [gridCells, setGridCells] = useState([]);
-
-  const maxColumns = 12; //TODO find max columns
+  const [maxCols, setMaxCols] = useState(12);
 
   useEffect(() => {
+    console.log(`ElementsGrid was created!`);
+    return () => {
+      console.log(`ElementsGrid was destroyed!`);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setMaxCols(Math.max(...props.cells.map((cell) => cell.split(";")[1])));
+
     const createGridCells = () => {
       const newGridCells = [];
       props.cells.forEach((cell, i) => {
         //TODO validating cells should be here!
-        const [x, y, header, type, value] = cell.split(";");
-        //console.log("[x, y, header, type, value]=", x, y, header, type, value);
+        const [row, col, header, type, value] = cell.split(";");
         switch (type.toUpperCase()) {
           case "SELECT":
             newGridCells.push(
               <div
                 key={i}
                 data-grid={{
-                  x: Number(x),
-                  y: Number(y),
+                  x: Number(col - 1),
+                  y: Number(row - 1),
                   w: 1,
                   h: 3,
                   static: true,
@@ -30,15 +40,15 @@ export function ElementsGrid(props) {
               >
                 <SelectInput header={header} options={value.split(",")} />
               </div>
-            );            
+            );
             break;
           case "TEXT_INPUT":
             newGridCells.push(
               <div
                 key={i}
                 data-grid={{
-                  x: Number(x),
-                  y: Number(y),
+                  x: Number(col - 1),
+                  y: Number(row - 1),
                   w: 1,
                   h: 3,
                   static: true,
@@ -49,25 +59,17 @@ export function ElementsGrid(props) {
             );
             break;
           default:
-            console.log("unknown cell type");
+            console.error("unknown cell type");
         }
-      });      
+      });
       setGridCells(newGridCells);
     };
     createGridCells();
   }, [props.cells]);
 
-
   return (
-    <GridLayout
-      className="layout"
-      cols={maxColumns}
-      rowHeight={30}
-      width={1200}
-    >
+    <GridLayoutWithWidth className="layout" rowHeight={30} cols={maxCols}>
       {gridCells}
-    </GridLayout>
+    </GridLayoutWithWidth>
   );
 }
-
-//edo@stampli.com

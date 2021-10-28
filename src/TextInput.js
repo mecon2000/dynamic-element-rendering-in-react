@@ -6,16 +6,15 @@ export function TextInput(props) {
     return () => {
       console.log(`TextInput\t'${props.header}'\twas destroyed!`);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      <form>
         <label>
           {props.header}
           <input type="text" defaultValue={props.value} />
         </label>
-      </form>
     </>
   );
 }

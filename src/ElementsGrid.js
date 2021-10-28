@@ -16,7 +16,6 @@ export function ElementsGrid(props) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
     setMaxCols(Math.max(...props.cells.map((cell) => cell.split(";")[1])));
 
@@ -25,16 +24,17 @@ export function ElementsGrid(props) {
       props.cells.forEach((cell, i) => {
         //TODO validating cells should be here!
         const [row, col, header, type, value] = cell.split(";");
+        
         switch (type.toUpperCase()) {
           case "SELECT":
             newGridCells.push(
               <div
-                key={i}
+                key={cell}
                 data-grid={{
                   x: Number(col - 1),
                   y: Number(row - 1),
                   w: 1,
-                  h: 3,
+                  h: 1,
                   static: true,
                 }}
               >
@@ -45,12 +45,12 @@ export function ElementsGrid(props) {
           case "TEXT_INPUT":
             newGridCells.push(
               <div
-                key={i}
+                key={cell}
                 data-grid={{
                   x: Number(col - 1),
                   y: Number(row - 1),
                   w: 1,
-                  h: 3,
+                  h: 1,
                   static: true,
                 }}
               >
@@ -68,7 +68,7 @@ export function ElementsGrid(props) {
   }, [props.cells]);
 
   return (
-    <GridLayoutWithWidth className="layout" rowHeight={30} cols={maxCols}>
+    <GridLayoutWithWidth className="layout" rowHeight={70} cols={maxCols}>
       {gridCells}
     </GridLayoutWithWidth>
   );
